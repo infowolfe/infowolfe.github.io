@@ -49,5 +49,5 @@ mount /dev/sda1 /mnt
 pacstrap /mnt "ack base base-devel grub npm open-vm-tools openssh perl python2 rsync rxvt-unicode-terminfo vim"
 curl -o /mnt/root/arch_stage2.sh https://infowolfe.github.io/arch_stage2.sh
 chmod 755 /mnt/root/arch_stage2.sh
-arch-chroot /mnt /root/arch_stage2.sh $GH_USERS $1
-reboot
+arch-chroot /mnt /root/arch_stage2.sh $GH_USERS
+#reboot
