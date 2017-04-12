@@ -17,8 +17,9 @@ Name=${i}
 DHCP=ipv4
 EOF
 done
-echo "What should we call this VM?"
-read hostname
+
+# set temporary hostname
+hostname=archvm
 hostnamectl set-hostname ${hostname}
 echo ${hostname} > /etc/hostname
 echo -e "127.0.0.1\t${hostname}" >> /etc/hosts
@@ -30,6 +31,9 @@ ln -sf /usr/share/zoneinfo/EST5EDT /etc/localtime
 for i in sshd systemd-networkd ; do
 	systemctl enable ${i}
 done
+
+# write out hostname script for first login
+curl -o /etc/profile.d/firstrun.sh https://infowolfe.github.io/arch_firstrun.sh 
 
 # setup locale
 sed -i -e 's~^#en_US~en_US~' /etc/locale.gen
