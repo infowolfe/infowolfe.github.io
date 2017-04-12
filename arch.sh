@@ -20,17 +20,28 @@ systemctl start sshd
 ln -s /usr/bin/python2 /usr/bin/python
 
 # fdisk
-cat << EOF 
-Please fdisk with /dev/sda1 as your root and /dev/sda2 as your swap
-Your swap space should be approximately equal to your assigned ram
-with a minimum of 4GB available.
+sectors=$(fdisk -l | awk /sectors/{'print $7'} | head -n1)
+disksize=$((sectors / 2 / 1024))
+rootsize=$((disksize - 4097))
+cat << EOF | fdisk /dev/sda
+o
+n
+p
+1
 
-You will need to use 'n' to create a new partition.
-You will need to use 't' on partition 2 with type '82'.
-You will need to use 'a' on partition 1 to make it bootable.
+$((rootsize * 2 * 1024))
+a
+n
+p
+2
+
+
+t
+2
+82
+w
+
 EOF
-fdisk /dev/sda
-
 mkfs.xfs /dev/sda1
 mkswap /dev/sda2
 swapon /dev/sda2
