@@ -56,4 +56,4 @@ arch-chroot /mnt /root/arch_stage2.sh $GH_USERS
 }
 
 do_ssh && do_disk && do_install
-#reboot
+reboot
