@@ -46,5 +46,4 @@ mkfs.xfs /dev/sda1
 mkswap /dev/sda2
 swapon /dev/sda2
 mount /dev/sda1 /mnt
-pacstrap /mnt base base-devel python2 vim openssh grub
-
+pacstrap /mnt base base-devel grub npm openssh perl python2 rsync rxvt-unicode-terminfo vim
