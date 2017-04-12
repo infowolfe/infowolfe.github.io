@@ -10,7 +10,7 @@ read
 
 # initialize the authorized_keys file
 mkdir -p /root/.ssh/ ; rm /root/.ssh/authorized_keys
-for i in $GH_USERS; do curl https://github.com/${i}.keys >> /root/.ssh/authorized_keys ; done
+for i in $GH_USERS; do curl https://github.com/${i}.keys ; done > /root/.ssh/authorized_keys 
 chmod 0700 /root/.ssh; chmod 0600 /root/.ssh/authorized_keys
 
 # start sshd
@@ -46,4 +46,8 @@ mkfs.xfs /dev/sda1
 mkswap /dev/sda2
 swapon /dev/sda2
 mount /dev/sda1 /mnt
-pacstrap /mnt base base-devel grub npm openssh perl python2 rsync rxvt-unicode-terminfo vim
+pacstrap /mnt "ack base base-devel grub npm open-vm-tools openssh perl python2 rsync rxvt-unicode-terminfo vim"
+curl -o /mnt/root/arch_stage2.sh https://infowolfe.github.io/arch_stage2.sh
+chmod 755 /mnt/root/arch_stage2.sh
+arch-chroot /mnt /root/arch_stage2.sh $GH_USERS $1
+reboot
