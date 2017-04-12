@@ -1,29 +1,32 @@
 #!/bin/bash
-GH_USERS="infowolfe angryrancor $1"
+export GH_USERS="infowolfe angryrancor $1"
 cat << EOF
 If you'd like to add more github user sshkeys, please append them to
 the sh command being run now like:
 	curl https://infowolfe.github.io/arch.sh | bash "user1 user2"
 hit enter to continue or ^C to interrupt
 EOF
-read
+read null
 
-# initialize the authorized_keys file
-mkdir -p /root/.ssh/ ; rm /root/.ssh/authorized_keys
-for i in $GH_USERS; do curl https://github.com/${i}.keys ; done > /root/.ssh/authorized_keys 
-chmod 0700 /root/.ssh; chmod 0600 /root/.ssh/authorized_keys
+do_ssh() {
+	# initialize the authorized_keys file
+	mkdir -p /root/.ssh/ ; rm /root/.ssh/authorized_keys
+	for i in $GH_USERS; do curl https://github.com/${i}.keys ; done > /root/.ssh/authorized_keys 
+	chmod 0700 /root/.ssh; chmod 0600 /root/.ssh/authorized_keys
 
-# start sshd
-systemctl start sshd
+	# start sshd
+	systemctl start sshd
+	
+	# symlink python
+	ln -s /usr/bin/python2 /usr/bin/python
+}
 
-# symlink python
-ln -s /usr/bin/python2 /usr/bin/python
-
+do_disk() {
 # fdisk
 sectors=$(fdisk -l | awk /sectors/{'print $7'} | head -n1)
 disksize=$((sectors / 2 / 1024))
 rootsize=$((disksize - 4097))
-cat << EOF | fdisk /dev/sda
+cat << EOF | fdisk /dev/sda && \ 
 o
 n
 p
@@ -42,12 +45,15 @@ t
 w
 
 EOF
-mkfs.xfs /dev/sda1
-mkswap /dev/sda2
-swapon /dev/sda2
-mount /dev/sda1 /mnt
-pacstrap /mnt "ack base base-devel grub npm open-vm-tools openssh perl python2 rsync rxvt-unicode-terminfo vim"
-curl -o /mnt/root/arch_stage2.sh https://infowolfe.github.io/arch_stage2.sh
-chmod 755 /mnt/root/arch_stage2.sh
+mkfs.xfs /dev/sda1 && mkswap /dev/sda2 && swapon /dev/sda2 && mount /dev/sda1 /mnt
+}
+
+do_install() {
+pacstrap /mnt ack base base-devel grub npm open-vm-tools openssh perl python2 rsync rxvt-unicode-terminfo vim && \
+curl -o /mnt/root/arch_stage2.sh https://infowolfe.github.io/arch_stage2.sh && \
+chmod 755 /mnt/root/arch_stage2.sh && \
 arch-chroot /mnt /root/arch_stage2.sh $GH_USERS
+}
+
+do_ssh && do_disk && do_install
 #reboot
