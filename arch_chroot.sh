@@ -44,6 +44,15 @@ useradd -m -k /etc/skel orchard
 cp -a /root/.ssh ~orchard/.ssh
 chown -R orchard:orchard ~orchard/
 
+# add orchard to sudoers
+echo "orchard ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/orchard
+
+# tell user what our current ip is
+sed -i -e 's~^Arch.*~& \\4~' /etc/issue
+
+# install meteor as orchard
+su - orchard -c "curl https://install.meteor.com/ | sh"
+
 # setup boot
 mkinitcpio -p linux
 grub-install /dev/sda

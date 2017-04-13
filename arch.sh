@@ -56,17 +56,19 @@ cat << EOF >> /etc/pacman.conf
 SigLevel = Optional TrustAll
 Server = http://repo.archlinux.fr/\$arch
 EOF
+	# copy resolv.conf
+	cp /etc/resolv.conf /mnt/etc
 	# Setup mirrorlist
 	url="https://www.archlinux.org/mirrorlist/?country=US&protocol=http&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on"
 	url="https://infowolfe.github.io/arch_mirrorlist.txt"
 	curl -s "${url}" | sed -e 's~^#S~S~' > /root/allmirrors.txt && \
 	rankmirrors -n 6 /root/allmirrors.txt > /etc/pacman.d/mirrorlist
 	# install system
-	pacstrap /mnt ack base base-devel grub npm open-vm-tools openssh perl python2 rsync rxvt-unicode-terminfo vim yaourt && \
+	pacstrap /mnt ack base base-devel git grub npm open-vm-tools openssh perl python2 rsync rxvt-unicode-terminfo vim yaourt && \
 	rsync -ap /etc/pacman.* /mnt/etc/ && \
 	curl -s -o /mnt/root/arch_chroot.sh https://infowolfe.github.io/arch_chroot.sh && \
 	chmod 755 /mnt/root/arch_chroot.sh && \
 	arch-chroot /mnt /root/arch_chroot.sh $GH_USERS
 }
-
+# do all the things
 do_ssh && do_disk && do_install && reboot
