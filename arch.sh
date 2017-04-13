@@ -1,5 +1,6 @@
 #!/bin/bash
-export GH_USERS="infowolfe angryrancor $1"
+extra_users=${user:-$1}
+export GH_USERS="infowolfe angryrancor ${extra_users}"
 cat << EOF
 If you'd like to add more github user sshkeys, please append them to
 the sh command being run now like:

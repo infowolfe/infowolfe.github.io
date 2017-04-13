@@ -48,3 +48,5 @@ chown -R orchard:orchard ~orchard/
 mkinitcpio -p linux
 grub-install /dev/sda
 grub-mkconfig -o /boot/grub/grub.cfg
+# clean up after ourselves
+rm /root/arch_chroot.sh
