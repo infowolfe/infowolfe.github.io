@@ -59,6 +59,7 @@ EOF
 	# copy resolv.conf
 	cp /etc/resolv.conf /mnt/etc
 	# Setup mirrorlist
+	echo "Please stand by while we sort mirrors by speed..."
 	url="https://www.archlinux.org/mirrorlist/?country=US&protocol=http&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on"
 	url="https://infowolfe.github.io/arch_mirrorlist.txt"
 	curl -s "${url}" | sed -e 's~^#S~S~' > /root/allmirrors.txt && \
