@@ -52,6 +52,7 @@ do_install() {
 	# insert archlinuxfr repo
 cat << EOF >> /etc/pacman.conf
 [archlinuxfr]
+SigLevel = Optional TrustAll
 Server = http://repo.archlinux.fr/\$arch
 EOF
 	# Setup mirrorlist
