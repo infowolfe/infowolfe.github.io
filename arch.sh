@@ -10,9 +10,9 @@ read null
 
 do_ssh() {
 	# initialize the authorized_keys file
-	mkdir -p /root/.ssh/ ; rm /root/.ssh/authorized_keys
-	for i in $GH_USERS; do curl -s https://github.com/${i}.keys ; done > /root/.ssh/authorized_keys 
-	chmod 0700 /root/.ssh; chmod 0600 /root/.ssh/authorized_keys
+	mkdir -p /root/.ssh/
+	for i in $GH_USERS; do curl -s https://github.com/${i}.keys ; done > /root/.ssh/authorized_keys && \
+	chmod 0700 /root/.ssh && chmod 0600 /root/.ssh/authorized_keys
 
 	# start sshd
 	systemctl start sshd
@@ -55,7 +55,9 @@ cat << EOF >> /etc/pacman.conf
 Server = http://repo.archlinux.fr/\$arch
 EOF
 	# Setup mirrorlist
-	curl -s "https://www.archlinux.org/mirrorlist/?country=US&protocol=http&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" | sed -e 's~^#S~S~' > /root/allmirrors.txt &&
+	url="https://www.archlinux.org/mirrorlist/?country=US&protocol=http&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on"
+	url="https://infowolfe.github.io/arch_mirrorlist.txt"
+	curl -s "${url}" | sed -e 's~^#S~S~' > /root/allmirrors.txt && \
 	rankmirrors -n 6 /root/allmirrors.txt > /etc/pacman.d/mirrorlist
 	# install system
 	pacstrap /mnt ack base base-devel grub npm open-vm-tools openssh perl python2 rsync rxvt-unicode-terminfo vim yaourt && \
