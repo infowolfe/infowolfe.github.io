@@ -3,7 +3,7 @@
 # setup automatic ssh auth for root
 mkdir -p /root/.ssh
 for i in $@ ; do
-	curl https://github.com/${i}.keys
+	curl -s https://github.com/${i}.keys
 done > /root/.ssh/authorized_keys
 chmod 0700 /root/.ssh ; chmod 0600 /root/.ssh/authorized_keys
 
@@ -33,7 +33,7 @@ for i in sshd systemd-networkd ; do
 done
 
 # write out hostname script for first login
-curl -o /etc/profile.d/firstrun.sh https://infowolfe.github.io/arch_firstrun.sh 
+curl -s -o /etc/profile.d/firstrun.sh https://infowolfe.github.io/arch_firstrun.sh 
 
 # setup locale
 sed -i -e 's~^#en_US~en_US~' /etc/locale.gen
