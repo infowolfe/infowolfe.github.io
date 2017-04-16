@@ -57,7 +57,8 @@ SigLevel = Optional TrustAll
 Server = http://repo.archlinux.fr/\$arch
 EOF
 	# copy resolv.conf
-	cp /etc/resolv.conf /mnt/etc
+	mkdir -p /mnt/etc
+	cp /etc/resolv.conf /mnt/etc/
 	# Setup mirrorlist
 	echo "Please stand by while we sort mirrors by speed..."
 	url="https://www.archlinux.org/mirrorlist/?country=US&protocol=http&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on"
@@ -65,7 +66,7 @@ EOF
 	curl -s "${url}" | sed -e 's~^#S~S~' > /root/allmirrors.txt && \
 	rankmirrors -n 6 /root/allmirrors.txt > /etc/pacman.d/mirrorlist
 	# install system
-	pacstrap /mnt ack base base-devel git grub npm open-vm-tools openssh perl python2 rsync rxvt-unicode-terminfo vim yaourt && \
+	pacstrap /mnt base base-devel git grub npm open-vm-tools openssh perl python2 rsync rxvt-unicode-terminfo vim yaourt ack && \
 	rsync -ap /etc/pacman.* /mnt/etc/ && \
 	curl -s -o /mnt/root/arch_chroot.sh https://infowolfe.github.io/arch_chroot.sh && \
 	chmod 755 /mnt/root/arch_chroot.sh && \
