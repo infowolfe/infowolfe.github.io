@@ -56,9 +56,6 @@ cat << EOF >> /etc/pacman.conf
 SigLevel = Optional TrustAll
 Server = http://repo.archlinux.fr/\$arch
 EOF
-	# copy resolv.conf
-	mkdir -p /mnt/etc
-	cp /etc/resolv.conf /mnt/etc/
 	# Setup mirrorlist
 	echo "Please stand by while we sort mirrors by speed..."
 	url="https://www.archlinux.org/mirrorlist/?country=US&protocol=http&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on"
@@ -71,6 +68,9 @@ EOF
 	curl -s -o /mnt/root/arch_chroot.sh https://infowolfe.github.io/arch_chroot.sh && \
 	chmod 755 /mnt/root/arch_chroot.sh && \
 	arch-chroot /mnt /root/arch_chroot.sh $GH_USERS
+	# copy resolv.conf
+	cp /etc/resolv.conf /mnt/etc/
+
 }
 # do all the things
 do_ssh && do_disk && do_install && reboot
